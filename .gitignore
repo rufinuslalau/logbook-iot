@@ -1,0 +1,8 @@
+# Rahasia, JANGAN PERNAH di-commit
+.env
+*.keystore
+key.properties
+
+# Sampah OS
+.DS_Store
+Thumbs.db
