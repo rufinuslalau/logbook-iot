@@ -107,7 +107,12 @@ class _DialogTransaksiState extends State<_DialogTransaksi> {
               child: CircularProgressIndicator(strokeWidth: 3),
             ),
             SizedBox(width: 16),
-            Expanded(child: Text('Mengirim transaksi...')),
+            Expanded(
+              child: Text(
+                'Menunggu persetujuan di MetaMask...\n'
+                'Buka MetaMask lalu setujui transaksinya.',
+                ),
+                ),
           ],
         );
       case _Tahap.menunggu:

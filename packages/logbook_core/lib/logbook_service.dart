@@ -8,25 +8,33 @@ import 'package:web3dart/web3dart.dart';
 import 'abi.dart';
 import 'models.dart';
 
+/// Meneruskan pemanggilan fungsi tulis ke wallet (MetaMask) untuk ditandatangani.
+typedef PenulisKontrak = Future<dynamic> Function(
+  String fungsi,
+  List<dynamic> args,
+);
+
 class LogbookService {
   LogbookService({
     required String rpcUrl,
     required String contractAddress,
     required this.chainId,
-    required String privateKey,
   })  : _client = Web3Client(rpcUrl, http.Client()),
-        _credentials = EthPrivateKey.fromHex(privateKey),
         _contract = DeployedContract(
           ContractAbi.fromJson(logbookAbi, 'LogbookAlat'),
           EthereumAddress.fromHex(contractAddress),
         );
 
   final Web3Client _client;
-  final EthPrivateKey _credentials;
   final DeployedContract _contract;
   final int chainId;
 
-  EthereumAddress get myAddress => _credentials.address;
+  /// Diisi oleh WalletGate setelah wallet terhubung.
+  EthereumAddress? akun;
+  PenulisKontrak? penulis;
+
+  DeployedContract get kontrak => _contract;
+  EthereumAddress get myAddress => akun!;
 
   void dispose() => _client.dispose();
 
@@ -39,16 +47,12 @@ class LogbookService {
     );
   }
 
-  Future<String> _tulis(String fn, List<dynamic> args) {
-    return _client.sendTransaction(
-      _credentials,
-      Transaction.callContract(
-        contract: _contract,
-        function: _contract.function(fn),
-        parameters: args,
-      ),
-      chainId: chainId, // wajib 11155111 (Sepolia), default web3dart = 1
-    );
+  /// Transaksi tulis ditandatangani di wallet, app hanya menerima hash-nya.
+  Future<String> _tulis(String fn, List<dynamic> args) async {
+    final kirim = penulis;
+    if (kirim == null) throw Exception('Wallet belum terhubung');
+    final hasil = await kirim(fn, args);
+    return hasil.toString();
   }
 
   DateTime? _waktu(BigInt detik) {
@@ -108,7 +112,7 @@ class LogbookService {
     return Future.wait(List.generate(n, (i) => ambilPinjam(i)));
   }
 
-  // ---------- tulis (dipakai di Minggu 4) ----------
+  // ---------- tulis (ditandatangani di wallet) ----------
   Future<String> tambahAlat(String nama) => _tulis('tambahAlat', [nama]);
 
   Future<String> ajukanPinjam(int idAlat, String nim) => _tulis('ajukanPinjam', [
