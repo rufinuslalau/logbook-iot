@@ -19,7 +19,7 @@ Future<void> main() async {
       contractAddress: _ambil('CONTRACT_ADDRESS'),
       chainId: int.parse(_ambil('CHAIN_ID')),
     );
-    runApp(UserApp(service: service, projectId: _ambil('REOWN_PROJECT_ID')));
+    runApp(LogbookApp(service: service, projectId: _ambil('REOWN_PROJECT_ID')));
   } catch (e, st) {
     runApp(
       LayarGalat(pesan: 'Periksa file .env dan pubspec.yaml.\n\n$e\n\n$st'),
@@ -27,8 +27,8 @@ Future<void> main() async {
   }
 }
 
-class UserApp extends StatelessWidget {
-  const UserApp({super.key, required this.service, required this.projectId});
+class LogbookApp extends StatelessWidget {
+  const LogbookApp({super.key, required this.service, required this.projectId});
 
   final LogbookService service;
   final String projectId;
@@ -37,16 +37,18 @@ class UserApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Logbook Alat - User',
+      title: 'Logbook Alat Lab IoT',
       theme: buatTema(Colors.indigo),
       home: WalletGate(
         service: service,
         projectId: projectId,
-        namaApp: 'Logbook Alat (User)',
+        namaApp: 'Logbook Alat Lab IoT',
         skema: 'logbookuser',
-        peran: PeranApp.user,
-        builder: (context, putuskan) =>
-            ShellApp(service: service, admin: false, onPutuskan: putuskan),
+        // Wallet admin -> tampilan admin (teal), selain itu -> tampilan user (indigo)
+        builder: (context, putuskan, admin) => Theme(
+          data: buatTema(admin ? Colors.teal : Colors.indigo),
+          child: ShellApp(service: service, admin: admin, onPutuskan: putuskan),
+        ),
       ),
     );
   }

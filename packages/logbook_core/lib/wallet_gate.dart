@@ -5,9 +5,7 @@ import 'package:web3dart/web3dart.dart';
 
 import 'logbook_service.dart';
 
-enum PeranApp { admin, user }
-
-/// Menampilkan layar sambung wallet, mendeteksi peran (admin/user),
+/// Menampilkan layar sambung wallet, mendeteksi peran (admin/user) dari kontrak,
 /// lalu menampilkan isi aplikasi lewat [builder].
 class WalletGate extends StatefulWidget {
   const WalletGate({
@@ -16,7 +14,6 @@ class WalletGate extends StatefulWidget {
     required this.projectId,
     required this.namaApp,
     required this.skema,
-    required this.peran,
     required this.builder,
   });
 
@@ -24,8 +21,11 @@ class WalletGate extends StatefulWidget {
   final String projectId;
   final String namaApp;
   final String skema; // harus sama dengan scheme di AndroidManifest
-  final PeranApp peran;
-  final Widget Function(BuildContext context, VoidCallback putuskan) builder;
+  final Widget Function(
+    BuildContext context,
+    VoidCallback putuskan,
+    bool admin,
+  ) builder;
 
   @override
   State<WalletGate> createState() => _WalletGateState();
@@ -85,7 +85,7 @@ class _WalletGateState extends State<WalletGate> {
     }
   }
 
-  /// Menyamakan service dengan sesi wallet saat ini.
+  /// Menyamakan service dengan sesi wallet saat ini, lalu mengecek perannya.
   Future<void> _sinkron() async {
     final m = _modal;
     if (m == null || !mounted) return;
@@ -111,6 +111,7 @@ class _WalletGateState extends State<WalletGate> {
           transaction: Transaction(from: s.akun),
           parameters: args,
         );
+    setState(() => _adalahAdmin = null); // tampilkan loading selama dicek
 
     try {
       final admin = await s.sayaAdalahAdmin();
@@ -131,7 +132,6 @@ class _WalletGateState extends State<WalletGate> {
   Widget build(BuildContext context) {
     final m = _modal;
     final s = widget.service;
-    final namaPeran = widget.peran == PeranApp.admin ? 'Admin' : 'User';
 
     if (_galat != null) {
       return _LayarPesan(
@@ -146,8 +146,9 @@ class _WalletGateState extends State<WalletGate> {
     if (!m.isConnected || s.akun == null) {
       return _LayarPesan(
         ikon: Icons.account_balance_wallet_outlined,
-        judul: 'Logbook Alat Lab IoT\n($namaPeran)',
+        judul: 'Logbook Alat\nLab IoT',
         pesan: 'Hubungkan wallet MetaMask untuk melanjutkan.\n'
+            'Admin dan user masuk otomatis sesuai wallet yang terhubung.\n'
             'Kunci privat tetap di MetaMask, tidak disimpan di aplikasi ini.',
         tombol: _TombolPutih('Hubungkan Wallet', Icons.link, () => m.openModalView()),
       );
@@ -157,26 +158,7 @@ class _WalletGateState extends State<WalletGate> {
     if (admin == null) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
-    if (widget.peran == PeranApp.admin && !admin) {
-      return _LayarPesan(
-        ikon: Icons.block,
-        judul: 'Bukan wallet admin',
-        pesan: 'Wallet ini bukan admin kontrak.\n'
-            'Hubungkan wallet admin, atau gunakan Aplikasi User.',
-        tombol: _TombolPutih('Ganti wallet', Icons.link_off, () => _putuskan()),
-      );
-    }
-    if (widget.peran == PeranApp.user && admin) {
-      return _LayarPesan(
-        ikon: Icons.admin_panel_settings_outlined,
-        judul: 'Ini wallet admin',
-        pesan: 'Wallet admin dipakai di Aplikasi Admin.\n'
-            'Hubungkan wallet user untuk meminjam alat.',
-        tombol: _TombolPutih('Ganti wallet', Icons.link_off, () => _putuskan()),
-      );
-    }
-
-    return widget.builder(context, () => _putuskan());
+    return widget.builder(context, () => _putuskan(), admin);
   }
 }
 
@@ -213,14 +195,14 @@ class _LayarPesan extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                Container(
-                  padding: const EdgeInsets.all(28),
-                  decoration: const BoxDecoration(
-                    color: Colors.white24,
-                    shape: BoxShape.circle,
+                  Container(
+                    padding: const EdgeInsets.all(28),
+                    decoration: const BoxDecoration(
+                      color: Colors.white24,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(ikon, size: 64, color: Colors.white),
                   ),
-                  child: Icon(ikon, size: 64, color: Colors.white),
-                ),
                   const SizedBox(height: 24),
                   Text(
                     judul,
