@@ -35,12 +35,12 @@ Aplikasi Flutter satu aplikasi untuk admin dan user yang mencatat peminjaman ala
 
 | Paket | Versi |
 | --- | ---: |
-| Flutter | `ISI` |
-| Dart | `ISI` |
-| `web3dart` | `ISI` |
-| `reown_appkit` | `ISI` |
-| `flutter_dotenv` | `ISI` |
-| `http` | `ISI` |
+| Flutter | `3.47.0` |
+| Dart | `3.13.0` |
+| `web3dart` | `2.7.3` |
+| `reown_appkit` | `1.7.6` |
+| `flutter_dotenv` | `6.0.2` |
+| `http` | `1.6.0` |
 
 ## Alamat kontrak
 
