@@ -141,8 +141,7 @@ Hasil ada di `build/app/outputs/flutter-apk/app-release.apk` pada masing-masing 
 
 | Luaran | Tautan |
 |---|---|
-| APK Aplikasi User | https://drive.google.com/file/d/1xtv8wELF2nl8jqGFDwJe_kqAi1IaX5lH/view?usp=sharing |
-| APK Aplikasi Admin | https://drive.google.com/file/d/1g8usZ8pV99xPWrQJqz0G7S4CTJLD7sIH/view?usp=sharing |
+| Link Download Applikasi | https://drive.google.com/file/d/1WxakBBdB_NTMtVyE435QaWb8Hx0AyOI8/view?usp=sharing |
 | Video demo | ISI_LINK_VIDEO_DEMO |
 | Laporan singkat (PDF) | ISI_LINK_LAPORAN |
 
