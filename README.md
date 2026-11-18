@@ -44,5 +44,7 @@ Aplikasi Flutter satu aplikasi untuk admin dan user yang mencatat peminjaman ala
 
 ## Alamat kontrak
 
-- Jaringan : [Ethereum Sepolia](https://sepolia.etherscan.io/) 
--Alamat Contract :  `0x22B8B37DE0aE5404171C0716c682442f19A1e817`https://sepolia.etherscan.io/address/0x22B8B37DE0aE5404171C0716c682442f19A1e817 
+- Jaringan : [Ethereum Sepolia](https://sepolia.etherscan.io/)
+- Alamat Contract : [0x8f7815824B13FA30EA9F954Bfb037c5634Aec441](https://sepolia.etherscan.io/address/0x8f7815824B13FA30EA9F954Bfb037c5634Aec441) 
+- Sumber Smart contract : [contracts/LogbookAlat.sol](https://github.com/rufinuslalau/logbook-iot/blob/main/contracts/LogbookAlat.sol)
+- ABI yang digunakan : [packages/logbook_core/lib/abi.dart](https://github.com/rufinuslalau/logbook-iot/blob/main/packages/logbook_core/lib/abi.dart)
